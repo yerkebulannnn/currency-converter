@@ -26,11 +26,22 @@ async function loadCurrencies() {
 }
 
 async function convertCurrency() {
-  const res = await fetch(apiUrl);
+  const from = fromCurrency.value;
+  const to = toCurrency.value;
+  const amountValue = amount.value;
+
+  if (!amountValue) {
+    result.textContent = "Please enter an amount.";
+    return;
+  }
+
+  const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${from}`;
+  const res = await fetch(url);
   const data = await res.json();
-  const rate = data.conversion_rates[toCurrency.value];
-  const converted = (amount.value * rate).toFixed(2);
-  result.textContent = `${amount.value} ${fromCurrency.value} = ${converted} ${toCurrency.value}`;
+
+  const rate = data.conversion_rates[to];
+  const converted = (amountValue * rate).toFixed(2);
+  result.textContent = `${amountValue} ${from} = ${converted} ${to}`;
 }
 
 convertBtn.addEventListener("click", convertCurrency);
